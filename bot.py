@@ -89,9 +89,9 @@ def callback_inline(call):
             bot.send_message(call.message.chat.id,
                              text="Надішліть файл з масивом для сортування")
         elif call.data == "l2-2":
-            bot.send_photo(call.message.chat.id, open("D:\Projects\AMC\labs\lab2\Theory.png", 'rb'),
+            bot.send_photo(call.message.chat.id, open(getcwd() + "\labs\lab2\Theory.png", 'rb'),
                            caption="Графік теоретично відомої обчислювальної складності")
-            bot.send_photo(call.message.chat.id, open("D:\Projects\AMC\labs\lab2\Practice.png", 'rb'),
+            bot.send_photo(call.message.chat.id, open(getcwd() + "\labs\lab2\Practice.png", 'rb'),
                            caption="Графік залежності часу виконання алгоритму від розміру вхідного масиву даних.")
 
 
@@ -128,10 +128,10 @@ def calculations(message):
             elif 10000 <= n < 100000:
                 t1 = time()
                 m = sample(range(1, 2 * n), n)
-                with open('D:\Projects\AMC\labs\lab2\\notsorted.txt', 'w') as file:
+                with open(getcwd() + '\labs\lab2\\notsorted.txt', 'w') as file:
                     file.write(str(m))
                 sm = sorted(m)
-                with open('D:\Projects\AMC\labs\lab2\\sorted.txt', 'w') as file:
+                with open(getcwd() + '\labs\lab2\\sorted.txt', 'w') as file:
                     file.write(str(sm))
                 sleep(140)
                 bot.send_message(
@@ -143,10 +143,10 @@ def calculations(message):
             else:
                 t1 = time()
                 m = sample(range(1, 2 * n), n)
-                with open('D:\Projects\AMC\labs\lab2\\notsorted.txt', 'w') as file:
+                with open(getcwd() + '\labs\lab2\\notsorted.txt', 'w') as file:
                     file.write(str(m))
                 sm = sorted(m)
-                with open('D:\Projects\AMC\labs\lab2\\sorted.txt', 'w') as file:
+                with open(getcwd() + '\labs\lab2\\sorted.txt', 'w') as file:
                     file.write(str(sm))
                 sleep(40*len(str(n)))
                 bot.send_message(

@@ -1,7 +1,9 @@
 from random import randint, shuffle,  choices, sample
 import time
 from matplotlib import pyplot
+from os import getcwd
 
+cwd = getcwd()
 
 def fast_bubble(m):
     t1 = time.time()
@@ -17,7 +19,7 @@ def fast_bubble(m):
         n -= 1
     t2 = time.time()
     time.sleep(0.00002)
-    with open('D:\Projects\AMC\labs\lab2\\sorted.txt', 'w') as file:
+    with open(cwd + '\\labs\\lab2\\sorted.txt', 'w') as file:
         file.write(str(m))
     return m, t2 - t1
 
@@ -36,7 +38,7 @@ def from_message(message):
 
 def random_generation(n):
     m = sample(range(1, 2 * n), n)
-    with open('D:\Projects\AMC\labs\lab2\\notsorted.txt', 'w') as file:
+    with open(cwd + '\\labs\\lab2\\notsorted.txt', 'w') as file:
         file.write(str(m))
     return str(m), fast_bubble(m)
 
@@ -51,7 +53,7 @@ def get_graph_for_sort():
     for i in range(1, 3001, 100):
         t.append(fast_bubble(choices(range(i * 2), k=i))[1])
     pyplot.plot(range(1, 31), t)
-    pyplot.savefig(r"D:\Projects\AMC\labs\lab2\Practice2.png")
+    pyplot.savefig(cwd + r"\labs\lab2\Practice2.png")
 
 
 def get_graph_for_theory():
@@ -59,5 +61,4 @@ def get_graph_for_theory():
     for i in range(1, 21):
         t.append(i**2)
     pyplot.plot(range(1, 21), t)
-    pyplot.savefig(r"D:\Projects\AMC\labs\lab2\Theory.png")
-
+    pyplot.savefig(cwd + r"\labs\lab2\Theory.png")

@@ -124,7 +124,10 @@ def mistake(x: int or float, n: int, marker: int, interp_f: "function"):
     # оцінка похибки оцінки похибки
     fl_fl = p1 - p2
     # розмитість оцінки похбки
-    blur = abs(fl_fl / fl)
+    try:
+        blur = abs(fl_fl / fl)
+    except ZeroDivisionError:
+        blur = 0.0
     return fl, fl_fl, blur
 
 
@@ -189,23 +192,39 @@ def table_gen(x: int or float, marker: int, interp_f: "function"):
     wb.save(cwd + '\\labs\\lab3\\fluff_table.xlsx')
 
 
-def plot_fluff(x: int or float, marker: int, interp_f: "function"):
+def plot_fluff(marker: int, interp_f: "function"):
     """
     Plots a graphic of fluff \n
     :param marker: function to explore \n
     :param interp_f: interpolation function to use
     """
-    fluffs = [mistake(x, n, marker, interp_f) for n in range(2, 15)]
-    fls, fl_fls, blurs = zip(*fluffs)
-
     plt.style.use('seaborn')
     colors = ['black', 'turquoise', 'crimson']
     fig = plt.figure("Помилка інтерполяції")
     sub = plt.subplot()
     sub.set_xlabel("n")
     sub.set_ylabel("fl")
-    sub.set_title(
-        "Помилка інтерполяції для статичного х \n x = {}".format(x), color=colors[0])
-    sub.plot(list(range(2, 15)), fls, color=colors[1], zorder=1)
+    sub.set_title("Помилка інтерполяції", color=colors[0])
+    cmap = plt.cm.get_cmap('hsv', 10)
+    for x in range(0, 10):
+        fluffs = [mistake(x, n, marker, interp_f) for n in range(2, 15)]
+        fls, fl_fls, blurs = zip(*fluffs)
+        sub.plot(list(range(2, 15)), fls, color=cmap(x), zorder=1)
     fig.add_subplot(sub)
     plt.savefig(cwd + '\\labs\\lab3\\fluff.png')
+
+
+def generate(marker: int, inter: "func", text):
+    return str(inter(float(text), gxi(11), getFunc(gxi(11), marker)))
+
+
+def generateInfo(marker, inter):
+    table_gen(4, marker, inter)
+    if marker == 1:
+        plot_s(np.linspace(3,6,6),inter)
+    if marker == 2:
+        plot_h(np.linspace(0,6,6),inter)
+    plot_fluff(marker,inter)
+
+
+

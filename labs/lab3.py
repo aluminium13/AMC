@@ -1,13 +1,18 @@
 from functools import reduce
 from operator import mul
-from math import cos, e
+from math import cos, e, pi
+from openpyxl import Workbook
+import matplotlib.pyplot as plt
 import numpy as np
+from os import getcwd
+
+cwd = getcwd()
 
 
 def gxi(n: int):
     """
     Function to generate list of x values \n
-    :param n: number of interpolation points 
+    :param n: number of interpolation points
     """
     return [3 + i * 0.3 for i in range(0, n)]
 
@@ -25,7 +30,7 @@ def lagrange(x: float, x_values: list, y_values: list):
     Lagrange interpolation \n
     :param x: a point fuction to count \n
     :param x_values: list of values of x \n
-    :param y_values: list of values of f(x) 
+    :param y_values: list of values of f(x)
     """
     def Ln(j): return multiply(
         (x - x_values[i]) / (x_values[j] - x_values[i]) for i in range(len(x_values)) if i != j)
@@ -49,7 +54,7 @@ def newton(x: float, x_values: list, y_values: list):
     Newton interpolation \n
     :param x: a point fuction to count \n
     :param x_values: list of values of x \n
-    :param y_values: list of values of f(x) 
+    :param y_values: list of values of f(x)
     """
     a = coef(x_values, y_values)
     n = len(a) - 1
@@ -64,7 +69,7 @@ def neville(x: float, x_values: list, y_values: list):
     Eitken interpolation \n
     :param x: a point fuction to count \n
     :param x_values: list of values of x \n
-    :param y_values: list of values of f(x) 
+    :param y_values: list of values of f(x)
     """
     n = len(x_values)
     p = n * [0]
@@ -123,3 +128,84 @@ def mistake(x: int or float, n: int, marker: int, interp_f: "function"):
     return fl, fl_fl, blur
 
 
+def plot_h(x_values: list, interp_f: "function"):
+    """
+    Plots a graphic of defined function in variant \n
+    :param x_values: list of values of x \n
+    :param interp_f: interpolation function to use
+    """
+    plt.style.use('seaborn')
+    colors = ['black', 'turquoise', 'crimson']
+    fig = plt.figure("Інтерполяція функції №10")
+    sub = plt.subplot()
+    sub.set_xlabel("x-axis")
+    sub.set_ylabel("y-axis")
+    sub.set_title("f(x) = Cos(x + e^(Cosx))", color=colors[0])
+    xp = gxi(len(x_values))
+    fp = getFunc(xp, 2)
+    y_values = [interp_f(x, xp, fp) for x in x_values]
+    sub.plot(x_values, y_values, color=colors[1], zorder=1)
+    sub.scatter(xp, fp, color=colors[2], marker="o", linewidths=1.0, zorder=2)
+    fig.add_subplot(sub)
+    plt.savefig(cwd + '\\labs\\lab3\\10.png')
+
+
+def plot_s(x_values: list, interp_f: "function"):
+    """
+    Plots a graphic of sin(x) \n
+    :param x_values: list of values of x \n
+    :param interp_f: interpolation function to use
+    """
+    plt.style.use('seaborn')
+    colors = ['black', 'turquoise', 'crimson']
+    fig = plt.figure("sine interpolation")
+    sub = plt.subplot()
+    sub.set_xlabel("x-axis")
+    sub.set_ylabel("y-axis")
+    sub.set_title("f(x) = sin(x)")
+    xp = gxi(len(x_values))
+    fp = getFunc(xp, 1)
+    yy = [interp_f(x, xp, fp) for x in x_values]
+    sub.plot(x_values, yy, color=colors[1], zorder=1)
+    sub.scatter(xp, fp, color=colors[2], marker="o", zorder=2)
+    fig.add_subplot(sub)
+    plt.savefig(cwd + '\\labs\\lab3\\sin.png')
+
+
+def table_gen(x: int or float, marker: int, interp_f: "function"):
+    """
+    Generate table of fluffs \n
+    :param x: a point fuction to count \n
+    :param marker: function to explore \n
+    :param interp_f: interpolation function to use
+    """
+    fluffs = [mistake(x, n, marker, interp_f) for n in range(2, 20)]
+    fls, fl_fls, blurs = zip(*fluffs)
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["n", "fluff", "fluff + 1", "k"])
+    for n in range(1, len(fls) + 1):
+        ws.append([n, (fls[n - 1]), (fl_fls[n - 1]), (blurs[n - 1])])
+    wb.save(cwd + '\\labs\\lab3\\fluff_table.xlsx')
+
+
+def plot_fluff(x: int or float, marker: int, interp_f: "function"):
+    """
+    Plots a graphic of fluff \n
+    :param marker: function to explore \n
+    :param interp_f: interpolation function to use
+    """
+    fluffs = [mistake(x, n, marker, interp_f) for n in range(2, 15)]
+    fls, fl_fls, blurs = zip(*fluffs)
+
+    plt.style.use('seaborn')
+    colors = ['black', 'turquoise', 'crimson']
+    fig = plt.figure("Помилка інтерполяції")
+    sub = plt.subplot()
+    sub.set_xlabel("n")
+    sub.set_ylabel("fl")
+    sub.set_title(
+        "Помилка інтерполяції для статичного х \n x = {}".format(x), color=colors[0])
+    sub.plot(list(range(2, 15)), fls, color=colors[1], zorder=1)
+    fig.add_subplot(sub)
+    plt.savefig(cwd + '\\labs\\lab3\\fluff.png')

@@ -7,8 +7,9 @@ from time import sleep, time
 TOKEN = "490295677:AAHMScwGt5h4g0jWPvWx-0euxpbU2z1MHjM"
 bot = telebot.TeleBot(TOKEN)
 
-global d
+global d, d3
 d = dict()
+d3 = dict()
 
 
 def rd_file(file): return [int(j) for j in "".join(
@@ -140,14 +141,17 @@ def callback_inline(call):
             l3()
         elif call.data == "l3-l":
             d[call.message.chat.id] = "l3-l"
+            d3[call.message.chat.id] = "l3-l"
             inter = lab3.lagrange
             out3()
         elif call.data == "l3-n":
             d[call.message.chat.id] = "l3-n"
+            d3[call.message.chat.id] = "l3-n"
             inter = lab3.newton
             out3()
         elif call.data == "l3-e":
             d[call.message.chat.id] = "l3-e"
+            d3[call.message.chat.id] = "l3-e"
             inter = lab3.neville
             out3()
         elif call.data == "l3-x":
@@ -157,18 +161,9 @@ def callback_inline(call):
                 call.message.chat.id, text="Введіть X",  reply_markup=markup)
         elif call.data == "l3-і":
             d[call.message.chat.id] = "l3-i"
-            lab3.generateInfo(marker, inter)
-            if marker == 1:
-                bot.send_photo(call.message.chat.id, open(getcwd() + "\labs\lab3\sin.png", 'rb'),
-                           caption="Графік інтерпольованої функції")
-            elif marker == 2:
-                bot.send_photo(call.message.chat.id, open(getcwd() + "\labs\lab3\\10.png", 'rb'),
-                           caption="Графік інтерпольованої функції")
-            bot.send_photo(call.message.chat.id, open(getcwd() + "\labs\lab3\\fluff.png", 'rb'),
-                           caption="Графік похибок інтерполяції")
-            bot.send_document(call.message.chat.id, open(
-                    'labs/lab3/fluff_table.xlsx', 'rb'), caption="Таблиця оцінок")
-            
+            markup = types.ForceReply(selective=False)
+            bot.send_message(
+                call.message.chat.id, text="Введіть X для обчислення похибки",  reply_markup=markup)
 
 
 @bot.message_handler(content_types=["text"])
@@ -235,9 +230,24 @@ def calculations(message):
         except ValueError:
             bot.send_message(
                 message.chat.id, text="Треба вводити цифри, а не букви! Обережніше!")
+
     elif d.get(message.chat.id) == "l3-x":
         bot.send_message(message.chat.id, text=lab3.generate(
             marker, inter, message.text))
+    elif d.get(message.chat.id) == "l3-i":
+        lab3.table_gen(float(message.text), marker, inter, d3[message.chat.id])
+
+        if marker == 1:
+            bot.send_photo(message.chat.id, open(getcwd() + "\labs\lab3\sin" + d3[message.chat.id] + ".png", 'rb'),
+                           caption="Графік інтерпольованої функції")
+        elif marker == 2:
+            bot.send_photo(message.chat.id, open(getcwd() + "\labs\lab3\\10" + d3[message.chat.id] + ".png", 'rb'),
+                           caption="Графік інтерпольованої функції")
+
+        bot.send_photo(message.chat.id, open(getcwd() + "\labs\lab3\\fluff" + str(marker) + d3[message.chat.id] + ".png", 'rb'),
+                       caption="Графік похибок інтерполяції")
+        bot.send_document(message.chat.id, open(
+            'labs/lab3/fluff_table' + d3[message.chat.id] + '.xlsx', 'rb'), caption="Таблиця оцінок")
 
 
 @bot.message_handler(content_types=['document'])
@@ -254,5 +264,6 @@ def handle_file_input(message: types.Message):
         bot.send_message(
             message.chat.id, text="Відсортований масив: " + str(f[0]))
         bot.send_message(message.chat.id, text="Час виконання: " + str(f[1]))
+
 
 bot.polling(none_stop=True)

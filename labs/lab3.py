@@ -131,11 +131,12 @@ def mistake(x: int or float, n: int, marker: int, interp_f: "function"):
     return fl, fl_fl, blur
 
 
-def plot_h(x_values: list, interp_f: "function"):
+def plot_h(x_values: list, interp_f: "function", nk: str):
     """
     Plots a graphic of defined function in variant \n
     :param x_values: list of values of x \n
-    :param interp_f: interpolation function to use
+    :param interp_f: interpolation function to use \n
+    :param nk: describe type of interpolation to save
     """
     plt.style.use('seaborn')
     colors = ['black', 'turquoise', 'crimson']
@@ -144,20 +145,21 @@ def plot_h(x_values: list, interp_f: "function"):
     sub.set_xlabel("x-axis")
     sub.set_ylabel("y-axis")
     sub.set_title("f(x) = Cos(x + e^(Cosx))", color=colors[0])
-    xp = gxi(len(x_values))
+    xp = gxi(11)
     fp = getFunc(xp, 2)
     y_values = [interp_f(x, xp, fp) for x in x_values]
     sub.plot(x_values, y_values, color=colors[1], zorder=1)
     sub.scatter(xp, fp, color=colors[2], marker="o", linewidths=1.0, zorder=2)
     fig.add_subplot(sub)
-    plt.savefig(cwd + '\\labs\\lab3\\10.png')
+    plt.savefig(cwd + '\\labs\\lab3\\10' + nk + '.png')
 
 
-def plot_s(x_values: list, interp_f: "function"):
+def plot_s(x_values: list, interp_f: "function", nk: str):
     """
     Plots a graphic of sin(x) \n
     :param x_values: list of values of x \n
-    :param interp_f: interpolation function to use
+    :param interp_f: interpolation function to use \n
+    :param nk: describe type of interpolation to save
     """
     plt.style.use('seaborn')
     colors = ['black', 'turquoise', 'crimson']
@@ -166,21 +168,22 @@ def plot_s(x_values: list, interp_f: "function"):
     sub.set_xlabel("x-axis")
     sub.set_ylabel("y-axis")
     sub.set_title("f(x) = sin(x)")
-    xp = gxi(len(x_values))
+    xp = gxi(11)
     fp = getFunc(xp, 1)
     yy = [interp_f(x, xp, fp) for x in x_values]
     sub.plot(x_values, yy, color=colors[1], zorder=1)
     sub.scatter(xp, fp, color=colors[2], marker="o", zorder=2)
     fig.add_subplot(sub)
-    plt.savefig(cwd + '\\labs\\lab3\\sin.png')
+    plt.savefig(cwd + '\\labs\\lab3\\sin' + nk + '.png')
 
 
-def table_gen(x: int or float, marker: int, interp_f: "function"):
+def table_gen(x: int or float, marker: int, interp_f: "function", nk: str):
     """
     Generate table of fluffs \n
     :param x: a point fuction to count \n
     :param marker: function to explore \n
-    :param interp_f: interpolation function to use
+    :param interp_f: interpolation function to use \n
+    :param nk: describe type of interpolation to save
     """
     fluffs = [mistake(x, n, marker, interp_f) for n in range(2, 20)]
     fls, fl_fls, blurs = zip(*fluffs)
@@ -189,14 +192,15 @@ def table_gen(x: int or float, marker: int, interp_f: "function"):
     ws.append(["n", "fluff", "fluff + 1", "k"])
     for n in range(1, len(fls) + 1):
         ws.append([n, (fls[n - 1]), (fl_fls[n - 1]), (blurs[n - 1])])
-    wb.save(cwd + '\\labs\\lab3\\fluff_table.xlsx')
+    wb.save(cwd + '\\labs\\lab3\\fluff_table' + nk + '.xlsx')
 
 
-def plot_fluff(marker: int, interp_f: "function"):
+def plot_fluff(marker: int, interp_f: "function", nk: str):
     """
     Plots a graphic of fluff \n
     :param marker: function to explore \n
-    :param interp_f: interpolation function to use
+    :param interp_f: interpolation function to use \n
+    :param nk: describe type of interpolation to save
     """
     plt.style.use('seaborn')
     colors = ['black', 'turquoise', 'crimson']
@@ -211,20 +215,9 @@ def plot_fluff(marker: int, interp_f: "function"):
         fls, fl_fls, blurs = zip(*fluffs)
         sub.plot(list(range(2, 15)), fls, color=cmap(x), zorder=1)
     fig.add_subplot(sub)
-    plt.savefig(cwd + '\\labs\\lab3\\fluff.png')
+    plt.savefig(cwd + '\\labs\\lab3\\fluff' + str(marker) + nk + '.png')
 
 
 def generate(marker: int, inter: "func", text):
     return str(inter(float(text), gxi(11), getFunc(gxi(11), marker)))
-
-
-def generateInfo(marker, inter):
-    table_gen(4, marker, inter)
-    if marker == 1:
-        plot_s(np.linspace(3,6,6),inter)
-    if marker == 2:
-        plot_h(np.linspace(0,6,6),inter)
-    plot_fluff(marker,inter)
-
-
 

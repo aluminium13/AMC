@@ -1,6 +1,6 @@
 from functools import reduce
 from operator import mul
-from math import cos, e, pi
+from math import cos, e
 from openpyxl import Workbook
 import matplotlib.pyplot as plt
 import numpy as np
@@ -218,6 +218,11 @@ def plot_fluff(marker: int, interp_f: "function", nk: str):
     plt.savefig(cwd + '\\labs\\lab3\\fluff' + str(marker) + nk + '.png')
 
 
-def generate(marker: int, inter: "func", text):
+def generate(marker: int, inter: "func", text: str):
+    """
+    To generate Y for telegramBot \n
+    :param marker: defines function to use \n
+    :param inter: define type of interpolation \n
+    :param text: define X for f(x)
+    """
     return str(inter(float(text), gxi(11), getFunc(gxi(11), marker)))
-

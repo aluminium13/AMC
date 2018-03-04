@@ -5,6 +5,7 @@ from os import getcwd
 
 cwd = getcwd()
 
+
 def fast_bubble(m):
     t1 = time.time()
     time.sleep(0.00002)

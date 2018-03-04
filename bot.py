@@ -30,6 +30,12 @@ def handle_start(message):
         message.chat.id, "Оберіть лабораторну роботу", reply_markup=keyboard)
 
 
+@bot.message_handler(commands=['sex'])
+def pas(message):
+    bot.send_photo(message.chat.id, open(
+        "1.png", 'rb'), caption="Лови красавчика")
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
     global d, marker, inter

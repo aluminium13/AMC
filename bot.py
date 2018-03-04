@@ -136,7 +136,7 @@ def callback_inline(call):
             kb.add(types.InlineKeyboardButton(
                 text="f(x) = Cos(x + e^(Cosx))", callback_data="l3-2"))
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                                  text="Інтерполяція функцій. Оберіть функцію для доослідження", reply_markup=kb)
+                                  text="Інтерполяція функцій. Оберіть функцію для дослідження", reply_markup=kb)
         elif call.data == "l3-1":
             d[call.message.chat.id] = "l3-1"
             marker = 1

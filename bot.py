@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 from os import path, getcwd, listdir
-from labs import lab1, lab2, lab3
+from labs import lab1, lab2, lab3, lab4
 from random import sample
 from time import sleep, time
 TOKEN = "490295677:AAHMScwGt5h4g0jWPvWx-0euxpbU2z1MHjM"
@@ -171,10 +171,30 @@ def callback_inline(call):
             bot.send_message(
                 call.message.chat.id, text="Введіть X для обчислення похибки",  reply_markup=markup)
 
+        elif call.data == "lab4":
+            d[call.message.chat.id] = "lab4"
+            kb = types.InlineKeyboardMarkup()
+            kb.add(types.InlineKeyboardButton(
+                text="x**3 + 8*x - 6 = 0", callback_data="l4-1"))
+            kb.add(types.InlineKeyboardButton(
+                text="Ввести самому", callback_data="l4-2"))
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                  text="Оберіть функцію для вирішення", reply_markup=kb)
+        elif call.data == "l4-1":
+            d[call.message.chat.id] = "l4-1"
+            markup = types.ForceReply(selective=False)
+            bot.send_message(
+                call.message.chat.id, text="Введіть точність обрахунків",  reply_markup=markup)
+        elif call.data == "l4-2":
+            d[call.message.chat.id] = "l4-21"
+            markup = types.ForceReply(selective=False)
+            bot.send_message(
+                call.message.chat.id, text="Введіть рівняння для обрахунку",  reply_markup=markup)
+            
 
 @bot.message_handler(content_types=["text"])
 def calculations(message):
-    global d
+    global d, f
     if d.get(message.chat.id) == "l1-1":
         bot.send_message(message.chat.id, text=lab1.linear(message.text))
     elif d.get(message.chat.id) == "l1-2":
@@ -254,6 +274,24 @@ def calculations(message):
                        caption="Графік похибок інтерполяції")
         bot.send_document(message.chat.id, open(
             'labs/lab3/fluff_table' + d3[message.chat.id] + '.xlsx', 'rb'), caption="Таблиця оцінок")
+
+    elif d.get(message.chat.id) == "l4-1":
+        bot.send_message(message.chat.id, text="Проміжок: вся дійсна вісь 0х \n" + 
+                                                "Точність eps = " + str(message.text) + "\n" +
+                                                lab4.solve(lab4.eqation,float(message.text)))
+    elif d.get(message.chat.id) == "l4-21":
+        f = lambda x: eval(message.text)
+        markup = types.ForceReply(selective=False)
+        d[message.chat.id] = "l4-22"
+        bot.send_message(
+            message.chat.id, text="Введіть точність обрахунків",  reply_markup=markup)
+    elif d.get(message.chat.id) == "l4-22":
+        try:
+            bot.send_message(message.chat.id, text="Проміжок: вся дійсна вісь 0х \n" + 
+                                                "Точність eps = " + str(message.text) + "\n" +
+                                                lab4.solve(f,float(message.text)))
+        except ValueError:
+            bot.send_message(message.chat.id, text="Введіть число, а не що попало! Наприклад, 0.0001")
 
 
 @bot.message_handler(content_types=['document'])

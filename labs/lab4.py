@@ -1,20 +1,19 @@
-def F(x):
-    return x**3 + 8*x-6
- 
-#производная
-def F1(x):
-    return 3*(x**2) + 8
- 
-def Method(a,b,eps):
-    try:
-        x0=(a+b)/2
-        xn=F(x0)
-        xn1=xn-F(xn)/F1(xn)
-        while abs(xn1-xn)>eps:
-            xn=xn1 
-            xn1=xn-F(xn)/F1(xn)
-        return xn1
-    except ValueError:
-        return "Value not invalidate"
+def derivative(f, x, h):
+      return (f(x+h) - f(x-h)) / (2.0*h)  # might want to return a small non-zero if ==0
 
-print(Method(0,1,10**(-8)))
+def eqation(x):
+    return x**3 + 8*x - 6    # just a function to show it works
+
+def solve(f, eps):
+    x = set()
+    for x0 in range(-1000,1000,10):
+        lastX = x0
+        nextX = lastX + 10* eps  # "different than lastX so loop starts OK
+        while (abs(lastX - nextX) > eps):  # this is how you terminate the loop - note use of abs()
+            lastX = nextX
+            nextX = lastX - f(nextX)   / derivative(f, lastX, eps)  # update estimate using N-R
+        x.add(round(nextX, len(str(eps))-2))
+    if len(x) != 0:
+        return "Рішення: x = " + str(x)
+    else:
+        return "Рішень немає"

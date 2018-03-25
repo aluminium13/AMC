@@ -35,12 +35,22 @@ def outputResult(x):
     cut = len(min(v, key=len))
     for i in range(len(x)):
         t += "x" + str(i+1) + " = " + str(x[i])[:cut] + "\n"
-    return t
+    return "Розв'язки системи: \n" + t
 
 def getMatrix(text):
-    return np.matrix(text)
-    
+    A = np.matrix(text)
+    return A.tolist()
 
+def outputMatrix(A, B):
+    #a = '\n'.join([''.join(['{:6}'.format(item) for item in row]) for row in A])
+    a = ""
+    for i in range(len(B)):
+        for j in range(len(B)):
+            a += ''.join([ '{:4}'.format(str(A[i][j])) + '*x' + str(j+1) + " + "])
+        a = a[:-3] + " = " + str(B[i]) + "\n"
+    return "Задана система рівнянь: \n" + a
+
+    
 # print(seidel([[1, -2],[0.5, -1]], [1, 1], 0.01)
 A = [[6.1, 0.7, -0.05], [-1.3, -2.05, 0.87], [2.5, -3.12, -5.03]]
 B = [6.97, 0.1, 2.04]

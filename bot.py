@@ -203,6 +203,7 @@ def callback_inline(call):
         elif call.data == "l5-1":
             A = [[6.1, 0.7, -0.05], [-1.3, -2.05, 0.87], [2.5, -3.12, -5.03]]
             B = [6.97, 0.1, 2.04]
+            bot.send_message(call.message.chat.id, text = lab5.outputMatrix(A, B))
             bot.send_message(call.message.chat.id, text = lab5.outputResult(lab5.seidel(A, B, 0.001)))
         elif call.data == "l5-2":
             d[call.message.chat.id] = "l5-2"
@@ -326,10 +327,11 @@ def calculations(message):
         B = []
         for i in b:
             B.append(float(i))
+        bot.send_message(message.chat.id, text = lab5.outputMatrix(A, B))
         try:
             bot.send_message(message.chat.id, text = lab5.outputResult(lab5.seidel(A, B, 0.001)))
         except:
-            bot.send_message(message.chat.id, text = "Така матриця не має вирішення")
+            bot.send_message(message.chat.id, text = "Така система не має вирішення")
 
 
 @bot.message_handler(content_types=['document'])

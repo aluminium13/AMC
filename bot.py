@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 from os import path, getcwd, listdir
-from labs import lab1, lab2, lab3, lab4
+from labs import lab1, lab2, lab3, lab4, lab5
 from random import sample
 from time import sleep, time
 TOKEN = "490295677:AAHMScwGt5h4g0jWPvWx-0euxpbU2z1MHjM"
@@ -190,11 +190,29 @@ def callback_inline(call):
             markup = types.ForceReply(selective=False)
             bot.send_message(
                 call.message.chat.id, text="Введіть рівняння для обрахунку",  reply_markup=markup)
+        
+        elif call.data == "lab5":
+            d[call.message.chat.id] = "lab5"
+            kb = types.InlineKeyboardMarkup()
+            kb.add(types.InlineKeyboardButton(
+                text="Система задана за варіантом", callback_data="l5-1"))
+            kb.add(types.InlineKeyboardButton(
+                text="Ввести самому", callback_data="l5-2"))
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                  text="Оберіть систему для вирішення", reply_markup=kb)
+        elif call.data == "l5-1":
+            A = [[6.1, 0.7, -0.05], [-1.3, -2.05, 0.87], [2.5, -3.12, -5.03]]
+            B = [6.97, 0.1, 2.04]
+            bot.send_message(call.message.chat.id, text = lab5.outputResult(lab5.seidel(A, B, 0.001)))
+        elif call.data == "l5-2":
+            d[call.message.chat.id] = "l5-2"
+            markup = types.ForceReply(selective=False)
+            bot.send_message(call.message.chat.id, text="Введіть матрицю А",  reply_markup=markup)
             
 
 @bot.message_handler(content_types=["text"])
 def calculations(message):
-    global d, f
+    global d, f, A, B
     if d.get(message.chat.id) == "l1-1":
         bot.send_message(message.chat.id, text=lab1.linear(message.text))
     elif d.get(message.chat.id) == "l1-2":
@@ -280,11 +298,16 @@ def calculations(message):
                                                 "Точність eps = " + str(message.text) + "\n" +
                                                 lab4.solve(lab4.eqation,float(message.text)))
     elif d.get(message.chat.id) == "l4-21":
-        f = lambda x: eval(message.text)
-        markup = types.ForceReply(selective=False)
-        d[message.chat.id] = "l4-22"
-        bot.send_message(
-            message.chat.id, text="Введіть точність обрахунків",  reply_markup=markup)
+        try:
+            f = lambda x: eval(message.text)
+            f(2)
+            markup = types.ForceReply(selective=False)
+            d[message.chat.id] = "l4-22"
+            bot.send_message(
+                message.chat.id, text="Введіть точність обрахунків",  reply_markup=markup)
+        except:
+            bot.send_message(message.chat.id, text = "Упс. Щось не так з рівнянням")
+            
     elif d.get(message.chat.id) == "l4-22":
         try:
             bot.send_message(message.chat.id, text="Проміжок: вся дійсна вісь 0х \n" + 
@@ -292,6 +315,21 @@ def calculations(message):
                                                 lab4.solve(f,float(message.text)))
         except ValueError:
             bot.send_message(message.chat.id, text="Введіть число, а не що попало! Наприклад, 0.0001")
+    
+    elif d.get(message.chat.id) == "l5-2":
+        A = lab5.getMatrix(message.text)
+        d[message.chat.id] = "l5-21"
+        markup = types.ForceReply(selective=False)
+        bot.send_message(message.chat.id, text="Введіть матрицю В",  reply_markup=markup)
+    elif d.get(message.chat.id) == "l5-21":
+        b = message.text.split(",")
+        B = []
+        for i in b:
+            B.append(float(i))
+        try:
+            bot.send_message(message.chat.id, text = lab5.outputResult(lab5.seidel(A, B, 0.001)))
+        except:
+            bot.send_message(message.chat.id, text = "Така матриця не має вирішення")
 
 
 @bot.message_handler(content_types=['document'])

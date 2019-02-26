@@ -4,7 +4,8 @@ from os import path, getcwd, listdir
 from labs import lab1, lab2, lab3, lab4, lab5
 from random import sample
 from time import sleep, time
-TOKEN = "490295677:AAHMScwGt5h4g0jWPvWx-0euxpbU2z1MHjM"
+from token import TOKEN 
+
 bot = telebot.TeleBot(TOKEN)
 
 global d, d3

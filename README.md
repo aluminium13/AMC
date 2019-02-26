@@ -1,3 +1,5 @@
+# AMC
+
 Subject: Algorithms and Methods of calculations
 
 Topic: Learn and realize different algorithms.
